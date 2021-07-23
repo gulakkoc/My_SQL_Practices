@@ -1,0 +1,5 @@
+SELECT months * salary AS Earnings,COUNT(*)
+FROM Employee
+GROUP BY months * salary
+ORDER BY Earnings DESC
+LIMIT 1;
