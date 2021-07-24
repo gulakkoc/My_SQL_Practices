@@ -1,0 +1,2 @@
+SELECT CEIL(CAST((AVG(Salary)) - (AVG(REPLACE(Salary,0,''))) AS FLOAT))
+FROM Employees;
