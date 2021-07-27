@@ -1,0 +1,5 @@
+SELECT Department.Name Department, Employee.Name Employee, Employee.Salary
+FROM Department,Employee
+WHERE Department.Id = Employee.DepartmentId
+AND (Employee.DepartmentId,Employee.Salary) IN 
+(Select DepartmentId, Max(Salary) from Employee Group By DepartmentId);
