@@ -14,4 +14,4 @@ Solution 2:
 SELECT IF(G.Grade < 8,NULL,Name),G.Grade, S.Marks
 FROM Students S,Grades G
 WHERE Marks BETWEEN Min_Mark AND Max_Mark
-ORDER BY Grade DESC, Name;    
+ORDER BY Grade DESC, Name;
