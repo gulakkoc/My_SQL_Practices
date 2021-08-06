@@ -9,7 +9,26 @@
 --1. Join all the tables and create a new table called combined_table. (market_fact, cust_dimen, orders_dimen, prod_dimen, shipping_dimen)
 
 
+SELECT cd.Cust_id, cd.Customer_Name, cd.Province, cd.Region, cd.Customer_Segment,
+mf.Ord_id, mf.Prod_id, mf.Sales, mf.Discount, mf.Order_Quantity, mf.Product_Base_Margin,
+od.Order_Date, od.Order_Priority,
+pd.Product_Category, pd.Product_Sub_Category,
+sd.Ship_id, sd.Ship_Mode, sd.Ship_Date
+FROM market_fact MF, prod_dimen PD, shipping_dimen SD, cust_dimen CD, orders_dimen OD 
+WHERE MF.Ship_id = SD.Ship_id AND MF.Prod_id = PD.Prod_id AND MF.Cust_id = CD.Cust_id AND MF.Ord_id = OD.Ord_id
 
+SELECT * 
+INTO COMBINE_TABLE 
+FROM (SELECT cd.Cust_id, cd.Customer_Name, cd.Province, cd.Region, cd.Customer_Segment,
+mf.Ord_id, mf.Prod_id, mf.Sales, mf.Discount, mf.Order_Quantity, mf.Product_Base_Margin,
+od.Order_Date, od.Order_Priority,
+pd.Product_Category, pd.Product_Sub_Category,
+sd.Ship_id, sd.Ship_Mode, sd.Ship_Date
+FROM market_fact MF, prod_dimen PD, shipping_dimen SD, cust_dimen CD, orders_dimen OD 
+WHERE MF.Ship_id = SD.Ship_id AND MF.Prod_id = PD.Prod_id AND MF.Cust_id = CD.Cust_id AND MF.Ord_id = OD.Ord_id) A
+
+SELECT *
+FROM COMBINE_TABLE
 
 
 --///////////////////////
@@ -18,8 +37,10 @@
 --2. Find the top 3 customers who have the maximum count of orders.
 
 
-
-
+SELECT TOP 3 Customer_Name, COUNT(Order_Quantity) "Number of Order"
+FROM COMBINE_TABLE
+GROUP BY Customer_Name
+ORDER BY "Number of Order"DESC;
 
 --/////////////////////////////////
 
@@ -37,7 +58,9 @@
 --4. Find the customer whose order took the maximum time to get delivered.
 --Use "MAX" or "TOP"
 
-
+SELECT TOP 1 Customer_Name, DATEDIFF(day,Order_Date, Ship_Date) Delivery_Date
+FROM COMBINE_TABLE
+ORDER BY Delivery_Date DESC;
 
 
 --////////////////////////////////
@@ -47,8 +70,13 @@
 --5. Count the total number of unique customers in January and how many of them came back every month over the entire year in 2011
 --You can use such date functions and subqueries
 
+SELECT COUNT(DISTINCT(Customer_Name))
+FROM COMBINE_TABLE
+WHERE MONTH(Order_Date) = 01 And MONTH(Order_Date) = '05'
 
-
+SELECT Customer_Name, Order_Date
+FROM COMBINE_TABLE
+WHERE MONTH(Order_Date) = 01 AND YEAR(Order_Date) = 2011
 
 
 --////////////////////////////////////////////
