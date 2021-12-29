@@ -37,7 +37,7 @@ FROM COMBINE_TABLE
 --2. Find the top 3 customers who have the maximum count of orders.
 
 
-SELECT TOP 3 Customer_Name, COUNT(Order_Quantity) "Number of Order"
+SELECT top 3 Customer_Name, COUNT(Order_Quantity) "Number of Order"
 FROM COMBINE_TABLE
 GROUP BY Customer_Name
 ORDER BY "Number of Order"DESC;
@@ -55,8 +55,12 @@ ADD "DaysTakenForDelivery" INT
 UPDATE COMBINE_TABLE
 SET DaysTakenForDelivery = DATEDIFF(day,Order_Date, Ship_Date)
 
-SELECT DaysTakenForDelivery
+
+
+
+SELECT Customer_Name, DaysTakenForDelivery
 FROM COMBINE_TABLE
+order by 
 
 
 --////////////////////////////////////
@@ -83,13 +87,19 @@ ORDER BY DaysTakenForDelivery DESC;
 --5. Count the total number of unique customers in January and how many of them came back every month over the entire year in 2011
 --You can use such date functions and subqueries
 
-SELECT COUNT(DISTINCT(Customer_Name))
+SELECT DISTINCT Year(Order_date) AS [YEAR], 
+				Month(Order_date) AS [MONTH], 
+				count(cust_id) OVER (PARTITION BY month(Order_date) order by month(Order_date)) ASTotal_Unique_Customers 
 FROM COMBINE_TABLE
-WHERE MONTH(Order_Date) = 01 And MONTH(Order_Date) = '05'
+WHERE year(Order_Date)=2011 AND cust_id IN 		
+	(SELECT DISTINCT cust_id 
+	FROM COMBINE_TABLE			
+	WHERE year(Order_Date) = 2011 AND month(Order_Date) = 01);
 
-SELECT Customer_Name, Order_Date
-FROM COMBINE_TABLE
-WHERE MONTH(Order_Date) = 01 AND YEAR(Order_Date) = 2011
+
+	SELECT DISTINCT CUSTOMER_NAME
+	FROM COMBINE_TABLE
+	WHERE year(Order_Date) = 2011 AND month(Order_Date) = 01
 
 
 --////////////////////////////////////////////
